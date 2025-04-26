@@ -50,7 +50,7 @@ clean:
 
 fclean: clean
 	@echo "Full cleaning..."
-	@$(RM) $(NAME)
+	@$(RM) $(NAME) $(EXEC)
 	@echo "\033[1;32mFull clean complete!\033[0m"
 
 re: fclean all
