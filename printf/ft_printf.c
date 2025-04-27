@@ -6,16 +6,11 @@
 /*   By: mqueiros <mqueiros@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 10:26:24 by mqueiros          #+#    #+#             */
-/*   Updated: 2025/04/23 14:06:46 by mqueiros         ###   ########.fr       */
+/*   Updated: 2025/04/27 21:49:33 by mqueiros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-
-int	ft_putchar(char c)
-{
-	return (write(1, &c, 1));
-}
 
 int	ft_putflag(va_list args, const char c)
 {
@@ -26,9 +21,9 @@ int	ft_putflag(va_list args, const char c)
 	else if (c == 'p')
 		return (ft_putptr(va_arg(args, void *)));
 	else if (c == 'd' || c == 'i')
-		return (ft_putnbr(va_arg(args, int)));
+		return (ft_putnbr(va_arg(args, int), 0));
 	else if (c == 'u')
-		return (ft_putuint(va_arg(args, unsigned int)));
+		return (ft_putnbr(va_arg(args, unsigned int), 1));
 	else if (c == 'x' || c == 'X')
 		return (ft_puthex(va_arg(args, unsigned int), c == 'x'));
 	else if (c == '%')

@@ -6,11 +6,16 @@
 /*   By: mqueiros <mqueiros@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:31:35 by mqueiros          #+#    #+#             */
-/*   Updated: 2025/04/23 15:33:52 by mqueiros         ###   ########.fr       */
+/*   Updated: 2025/04/27 21:49:43 by mqueiros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+int	ft_putchar(char c)
+{
+	return (write(1, &c, 1));
+}
 
 int	ft_putstr(char *str)
 {
@@ -62,37 +67,27 @@ int	ft_putptr(void *ptr)
 	return (len);
 }
 
-int	ft_putnbr(int num)
+int	ft_putnbr(long num, int is_unsigned)
 {
 	int	len;
 
 	len = 0;
-	if (num == -2147483648)
+	if (!is_unsigned)
 	{
-		len += ft_putstr("-2147483648");
-		return (len);
-	}
-	if (num < 0)
-	{
-		len += ft_putchar('-');
-		num *= -1;
+		if (num == -2147483648)
+		{
+			len += ft_putstr("-2147483648");
+			return (len);
+		}
+		if (num < 0)
+		{
+			len += ft_putchar('-');
+			num *= -1;
+		}
 	}
 	if (num > 9)
 	{
-		len += ft_putnbr(num / 10);
-	}
-	len += ft_putchar((num % 10) + '0');
-	return (len);
-}
-
-int	ft_putuint(unsigned int num)
-{
-	int	len;
-
-	len = 0;
-	if (num > 9)
-	{
-		len += ft_putuint(num / 10);
+		len += ft_putnbr(num / 10, is_unsigned);
 	}
 	len += ft_putchar((num % 10) + '0');
 	return (len);
