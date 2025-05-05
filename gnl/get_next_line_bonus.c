@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mqueiros <mqueiros@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/19 11:09:06 by jdecorte          #+#    #+#             */
-/*   Updated: 2025/05/05 13:40:02 by mqueiros         ###   ########.fr       */
+/*   Updated: 2025/05/05 13:54:19 by mqueiros         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*ft_strndup(const char *str, size_t len)
 {
@@ -102,25 +102,26 @@ static char	*ft_read_line(int fd, char *buffer, char *line)
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE + 1];
+	static char	buffer[FD_MAX][BUFFER_SIZE + 1];
 	char		*line;
 	ssize_t		nl;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = NULL;
-	if (buffer[0])
+	if (buffer[fd][0])
 	{
-		nl = ft_charpos(buffer, '\n');
+		nl = ft_charpos(buffer[fd], '\n');
 		if (nl >= 0)
 		{
-			line = ft_strndup(buffer, nl + 1);
-			ft_memmove(buffer, buffer + nl + 1, ft_strlen(buffer + nl + 1));
-			buffer[ft_strlen(buffer + nl + 1)] = '\0';
+			line = ft_strndup(buffer[fd], nl + 1);
+			ft_memmove(buffer[fd], buffer[fd] + nl + 1,
+				ft_strlen(buffer[fd] + nl + 1));
+			buffer[fd][ft_strlen(buffer[fd] + nl + 1)] = '\0';
 			return (line);
 		}
-		line = ft_strjoin_free(line, buffer, ft_strlen(buffer));
-		buffer[0] = '\0';
+		line = ft_strjoin_free(line, buffer[fd], ft_strlen(buffer[fd]));
+		buffer[fd][0] = '\0';
 	}
-	return (ft_read_line(fd, buffer, line));
+	return (ft_read_line(fd, buffer[fd], line));
 }
