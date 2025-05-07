@@ -43,9 +43,9 @@ $(NAME): $(OBJS)
 
 test:
 	@if [ ! -f $(NAME) ]; then \
-		$(MAKE) all; \
+		@$(MAKE) all; \
 	fi
-	$(CC) $(CFLAGS) main.c $(NAME) -o $(EXEC)
+	@$(CC) $(CFLAGS) main.c $(NAME) -o $(EXEC)
 
 clean:
 	@echo "Cleaning object files..."
