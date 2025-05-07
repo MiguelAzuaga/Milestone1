@@ -20,7 +20,7 @@ all: $(NAME)
 
 logo:
 	@echo -n "\033[1;31m"
-	@echo "\n"
+	@echo ""
 	@echo "   ██████╗ ██████╗ ██╗███╗   ██╗████████╗███████╗"
 	@echo "   ██╔══██╗██╔══██╗██║████╗  ██║╚══██╔══╝██╔════╝"
 	@echo "   ██████╔╝██████╔╝██║██╔██╗ ██║   ██║   █████╗  "
@@ -41,7 +41,10 @@ $(NAME): $(OBJS)
 %.o: %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-test: all
+test:
+	@if [ ! -f $(NAME) ]; then \
+		$(MAKE) all; \
+	fi
 	$(CC) $(CFLAGS) main.c $(NAME) -o $(EXEC)
 
 clean:
