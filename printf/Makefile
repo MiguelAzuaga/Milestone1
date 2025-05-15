@@ -15,11 +15,16 @@ SRCS_DIR = .
 AR = ar rcs
 RM = rm -rf
 
+#Colors
+WHITE = \033[0m
+GREEN = \033[1;38;5;120m
+COLOR = \033[1;31m
+
 #Rules
 all: $(NAME)
 
 logo:
-	@echo -n "\033[1;31m"
+	@echo -n "$(COLOR)"
 	@echo ""
 	@echo "   ██████╗ ██████╗ ██╗███╗   ██╗████████╗███████╗"
 	@echo "   ██╔══██╗██╔══██╗██║████╗  ██║╚══██╔══╝██╔════╝"
@@ -27,7 +32,7 @@ logo:
 	@echo "   ██╔═══╝ ██╔══██╗██║██║╚██╗██║   ██║   ██╔══╝  "
 	@echo "   ██║     ██║  ██║██║██║ ╚████║   ██║   ██║     "
 	@echo "   ╚═╝     ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝   ╚═╝   ╚═╝     "
-	@echo -n "\033[0m"
+	@echo -n "$(WHITE)"
 	@echo "                                By: Miguel Azuaga"
 	@echo ""
 
@@ -36,26 +41,23 @@ $(NAME): $(OBJS)
 	@echo "Building printf..."
 	@$(AR) $(NAME) $(OBJS)
 	@$(MAKE) --no-print-directory logo
-	@echo "\033[1;32mBuild complete!\033[0m"
+	@echo "$(GREEN)Build complete!$(WHITE)"
 
 %.o: %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 test:
-	@if [ ! -f $(NAME) ]; then \
-		@$(MAKE) all; \
-	fi
 	@$(CC) $(CFLAGS) main.c $(NAME) -o $(EXEC)
 
 clean:
 	@echo "Cleaning object files..."
 	@$(RM) $(OBJS)
-	@echo "\033[1;32mCleaned all objects!\033[0m"
+	@echo "$(GREEN)Cleaned all objects!$(WHITE)"
 
 fclean: clean
 	@echo "Full cleaning..."
 	@$(RM) $(NAME) $(EXEC)
-	@echo "\033[1;32mFull clean complete!\033[0m"
+	@echo "$(GREEN)Full clean complete!$(WHITE)"
 
 re: fclean all
 

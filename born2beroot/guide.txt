@@ -1,0 +1,55 @@
+1st step: installing
+	download .iso file for debian x64
+	create a vm with 1024MB Mem and 13GB space @(s)goinfre
+	startup VM, selecting .iso file downloaded previously (install)
+
+	hostname = "mqueiros42"	domain = "" user "mqueiros"
+
+2nd step: creating disk partitions
+	manually create partitions
+	select the correct disk and create partition table
+	create 2 partitions, 1 for booting (primary) and 1 more partition (logical)
+		boot partition >> 500MB >> mount point >> /boot
+		other partition >> max >> mount point >> none
+	encrypt volumes >> select sda5 (logical)
+	LVM: create group LVMGroup at sda5
+	create volumes inside group:
+		root	2GB
+		home	2GB
+		swap	1GB
+		tmp		2GB
+		srv		1.5GB
+		var		2GB
+		var-log	2GB
+	Mount points:
+		home	>> Ext4 >> /home
+		root	>> Ext4 >> /
+		swap	>> swap area   0
+		srv		>> Ext4 >> /srv
+		tmp		>> Ext4 >> /tmp
+		var		>> Ext4 >> /var
+		var-log	>> Ext4 >> manual >> /var/log
+	finish
+	say no to everything/leave fields blank except grub, install it
+	verify by using these commands:
+		$ lsblk
+		$ cat /etc/os-release
+
+3rd step: setting up the firewall and the ssh
+	log in as root and install sudo with
+		$su
+		# apt update
+		# apt install sudo
+		# sudo usermod -aG sudo mqueiros
+	this last command adds user mqueiros to sudo so the user gets sudo permitions
+	edit sudoers.tmp to change password etc settings
+		# sudo visudo
+		Defaults passwd_tries=3
+		Defaults badpass_message="Wrong password :("
+		Defaults logfile="/var/log/sudo/sudo.log"
+		Defaults log_input
+		Defaults log_output
+		Defaults requiretty
+	afterwards, create the directory for var/log/sudo
+	UFW (Uncomplicated FireWall)
+	
