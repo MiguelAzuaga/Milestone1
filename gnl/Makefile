@@ -6,20 +6,18 @@
 #    By: mqueiros <mqueiros@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/15 15:42:21 by mqueiros          #+#    #+#              #
-#    Updated: 2025/05/13 11:28:18 by mqueiros         ###   ########.fr        #
+#    Updated: 2025/05/ by mqueiros         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 #Name
 NAME = gnl.a
-EXEC = a.out \
-	test_1 test_10 test_42 test_100000 test_0 \
-	t_empty.txt t_newline.txt t_hello_world.txt t_multiple_newlines.txt
+EXEC = a.out test_1 test_10 test_42 test_100000 test_0 
+TEST_FILES = t_empty.txt t_newline.txt t_hello_world.txt t_mult_newlines.txt
 
 #Compiler
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
-BUFFER_SIZES = 1 10 42 100000 0
 
 #Files & Directories
 SRCS = get_next_line.c get_next_line_utils.c
@@ -31,11 +29,16 @@ BONUS_OBJS = $(BONUS_SRCS:.c=.o)
 AR = ar rcs
 RM = rm -rf
 
+#Colors
+WHITE = \033[0m
+GREEN = \033[1;38;5;120m
+COLOR = \033[1;33m
+
 #Rules
 all: $(NAME)
 
 logo:
-	@echo -n "\033[1;33m"
+	@echo -n "$(COLOR)"
 	@echo ""
 	@echo "    _____  _____  _____        "
 	@echo "   |   __||   __||_   _|       "
@@ -56,7 +59,7 @@ $(NAME): $(OBJS)
 	@echo "Building Get Next Line library..."
 	@$(AR) $(NAME) $(OBJS)
 	@$(MAKE) --no-print-directory logo
-	@echo "\033[1;32mBuild complete!\033[0m"
+	@echo "$(GREEN)Build complete!$(WHITE)"
 
 %.o: %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -64,46 +67,42 @@ $(NAME): $(OBJS)
 bonus: $(BONUS_OBJS)
 	@echo "Building the Get Next Line's Bonus library..."
 	@$(AR) $(NAME) $(BONUS_OBJS) $(OBJS)
-	@echo "\033[1;32mBuild complete!\033[0m"
+	@echo "$(GREEN)Build complete!$(WHITE)"
 
-test:
-	@if [ ! -f $(NAME) ]; then \
-		@$(MAKE) all; \
-	fi
-	@$(CC) $(CFLAGS) main.c $(NAME) -o $(EXEC)
+test: $(NAME)
+	@$(CC) $(CFLAGS) -D BUFFER_SIZE=1 main.c $(NAME) -o test_1
+	@$(CC) $(CFLAGS) -D BUFFER_SIZE=10 main.c $(NAME) -o test_10
+	@$(CC) $(CFLAGS) -D BUFFER_SIZE=42 main.c $(NAME) -o test_42
+	@$(CC) $(CFLAGS) -D BUFFER_SIZE=100000 main.c $(NAME) -o test_100000
+	@$(CC) $(CFLAGS) -D BUFFER_SIZE=0 main.c $(NAME) -o test_0
 
-# Loop through each BUFFER_SIZE
-tester: create_test_files
-	@for size in $(BUFFER_SIZES); do \
-		echo "Testing with BUFFER_SIZE=$$size..."; \
-		$(CC) $(CFLAGS) -DBUFFER_SIZE=$$size main.c $(NAME) -o test_$$size; \
-		if [ -x test_$$size ]; then \
-			echo "Output for BUFFER_SIZE=$$size:"; \
-			./test_$$size; \
-			echo ""; \
-		else \
-			echo "Compilation failed for BUFFER_SIZE=$$size"; \
-		fi; \
-	done
+# Run All Tests
+tester: create_test_files test
+	@echo "$(COLOR)Running tests...$(WHITE)\n\nBUFFER_SIZE = 1"
+	@./test_1 && echo "\n\nBUFFER_SIZE = 10"
+	@./test_10 && echo "\n\nBUFFER_SIZE = 42"
+	@./test_42 && echo "\n\nBUFFER_SIZE = 100000"
+	@./test_100000 && echo "\n\nBUFFER_SIZE = 0"
+	@./test_0 || echo "BUFFER_SIZE = 0 is expected to fail"
 
 create_test_files:
 	@echo "Creating test files..."
 	@echo -n "" > t_empty.txt
-	@echo "\n" > t_newline.txt
-	@echo "Hello World" > t_hello_world.txt
-	@echo -e "Hello\n\n\nWorld" > t_multiple_newlines.txt
-	@echo "\033[1;32mTest files created!\033[0m"
+	@echo -n "\n" > t_newline.txt
+	@echo -n "Hello World" > t_hello_world.txt
+	@echo -n "Hello\n\n\nWorld" > t_mult_newlines.txt
+	@echo "$(GREEN)Test files created!$(WHITE)"
 
 
 clean:
 	@echo "Cleaning object files..."
 	@$(RM) $(OBJS)
-	@echo "\033[1;32mCleaned all objects!\033[0m"
+	@echo "$(GREEN)Cleaned all objects!$(WHITE)"
 
 fclean: clean
 	@echo "Full cleaning..."
-	@$(RM) $(NAME) $(EXEC)
-	@echo "\033[1;32mFull clean complete!\033[0m"
+	@$(RM) $(NAME) $(EXEC) $(TEST_FILES)
+	@echo "$(GREEN)Full clean complete!$(WHITE)"
 
 re: fclean all
 
